@@ -1,0 +1,24 @@
+POST http://localhost:3000/CampusCore/admin-signup HTTP/1.1
+content-Type: application/json
+
+{
+    "collegeName": "try college",
+    "collegeCode": "32423",
+    "collegeType": "College",
+    "collegeEmail": "tryEmail@gmail.com",
+    "collegeContactNumber": "3843243242",
+    "adminName": "try admin",
+    "adminEmail": "tryadmin@gmail.com",
+    "adminContactNumber": "3248487638",
+    "password": "trytry"
+}
+###
+
+POST http://localhost:3000/CampusCore/admin-login HTTP/1.1
+content-Type: application/json
+
+{
+    "adminEmail": "tryadmin@gmail.com",
+    "password": "trytry"
+}
+###
