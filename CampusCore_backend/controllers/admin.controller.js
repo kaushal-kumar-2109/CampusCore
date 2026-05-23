@@ -66,7 +66,7 @@ const adminLogin = async (req,res) => {
                 authorize:"college_admin"
             }, 
             process.env.JWT_PRIVATE_KEY, 
-            { algorithm: 'HS256' }
+            { algorithm: process.env.JWT_ALGORITHUM }
         );
         await Admin.updateOne({_id:admin._id},{token});
         return res.status(200).json({message:"Admin loged in successfully",token:token});
@@ -74,5 +74,6 @@ const adminLogin = async (req,res) => {
         return res.status(500).json({message:"Error in login user", error:err.message});
     }
 }
+/* ******************** admin login controller end here ******************** */
 
 module.exports = {createAdmin,adminLogin};
