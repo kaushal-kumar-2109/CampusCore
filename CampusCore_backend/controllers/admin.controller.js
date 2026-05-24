@@ -6,6 +6,10 @@ const crypto = require("crypto");
 const dotenv = require("dotenv");
 var jwt = require('jsonwebtoken');
 
+const getOtp = require("../utils/otpCreate.js");
+const { sendOtpMail } = require("../handlers/emailVerification.js");
+const Otp = require("../models/otp.model.js");
+
 dotenv.config();
 
 
@@ -69,11 +73,46 @@ const adminLogin = async (req,res) => {
             { algorithm: process.env.JWT_ALGORITHUM }
         );
         await Admin.updateOne({_id:admin._id},{token});
-        return res.status(200).json({message:"Admin loged in successfully",token:token});
+        return res.status(200).json({message:"Admin loged in successfully",token:token,user:"college_admin"});
     }catch(err){
         return res.status(500).json({message:"Error in login user", error:err.message});
     }
 }
 /* ******************** admin login controller end here ******************** */
 
-module.exports = {createAdmin,adminLogin};
+
+/* ******************** admin email verify controller start here ******************** */
+const verifyEmail = async (req,res) => {
+    try{
+        const {adminEmail} = req.body;
+        if(!adminEmail) return res.status(400).json({tag:"email",message:"Email is required"});
+
+        const admin = await Admin.findOne({adminEmail});
+        if(!admin) return res.status(404).json({tag:"email",message:"User not found with this email"});
+
+        const otp = getOtp();
+        const emailStatus = await sendOtpMail(adminEmail,otp);
+
+        if(emailStatus.status == 200){
+            const oldOTP = await Otp.findOne({email:adminEmail});
+            if(oldOTP){
+                await Otp.updateOne({email:adminEmail},{otp});
+                return res.status(200).json({message:"Otp send successfully"});
+            }
+
+            const newOtp = new Otp({
+                email:adminEmail,
+                otp
+            });
+            await newOtp.save();
+            return res.status(200).json({message:"Otp send successfully "});
+        }
+        return emailStatus;
+
+    }catch(err){
+        return res.status(500).json({message:"There is and error in sending mail",error:err.message});
+    };
+}
+/* ******************** admin email verify controller end here ******************** */
+
+module.exports = {createAdmin,adminLogin,verifyEmail};

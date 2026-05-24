@@ -20,9 +20,9 @@ const userJWTToken = `
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS userToken (
         id TEXT NOT NULL PRIMARY KEY,
-        token text NOT NULL,
+        token TEXT NOT NULL,
+        authorize TEXT NOT NULL UNIQUE,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         expired_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 `;
@@ -32,7 +32,7 @@ const userJWTToken = `
 const delteUser = `
     PRAGMA journal_mode = WAL;
     DELETE FROM userToken where
-    expired_at < CURRENT_TIMESTAMP;
+    datetime(created_at, '+7 days') < CURRENT_TIMESTAMP;
 `;
 /* ******************** delte user after 7 days ends here ******************** */
 
@@ -60,9 +60,11 @@ const createTables = async (queries) => {
       console.log("Database not connected");
       return;
     }
+    // await db.execAsync("INSERT INTO userToken (id,token,authorize) VALUES('asjdfk','sdfhjgsjf','sfdhgdsadh')");
+    // await db.execAsync("DROP TABLE userToken;");
     queries.forEach(async(query) => {
-        await db.execAsync(query);
-        console.log("Table created successfully");
+        let res = await db.execAsync(query);
+        console.log("Table created successfully: ",res);
     });
 
   } catch (err) {

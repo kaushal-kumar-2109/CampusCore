@@ -22,3 +22,11 @@ content-Type: application/json
     "password": "trytry"
 }
 ###
+
+POST http://localhost:3000/CampusCore/verify-email HTTP/1.1
+content-Type: application/json
+
+{
+    "adminEmail": "tryadmin@gmail.com"
+}
+###
