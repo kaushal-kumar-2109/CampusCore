@@ -6,6 +6,8 @@ ROUTERS = {
     postRouter: {
         adminSignup: `${MAIN_API_PATH}/admin-signup`,
         userLogin: `${MAIN_API_PATH}/admin-login`,
+        signupEmailVerify: `${MAIN_API_PATH}/verify-signup-email`,
+        loginEmailVerify: `${MAIN_API_PATH}/verify-login-email`
     }
 };
 

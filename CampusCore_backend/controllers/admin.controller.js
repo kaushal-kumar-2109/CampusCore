@@ -17,11 +17,11 @@ dotenv.config();
 const createAdmin = async (req,res) => {
     try{
         const {
-            collegeName,collegeCode,collegeType,collegeEmail,
-            collegeContactNumber,
-            adminName,adminEmail,adminContactNumber,password
+            collegeName,collegeCode,collegeType,
+            adminName,adminEmail,adminContactNumber,password,
+            otp
         } = req.body;
-        if(!collegeName || !collegeCode || !collegeType || !collegeEmail || !collegeContactNumber || !adminContactNumber || !adminName || !adminEmail || !password){
+        if(!collegeName || !collegeCode || !collegeType || !adminContactNumber || !adminName || !adminEmail || !password || !otp){
             return res.status(400).json({message:"All field are required"});
         }
 
@@ -31,8 +31,13 @@ const createAdmin = async (req,res) => {
         const admin = await Admin.findOne({$or:[{"adminEmail":adminEmail},{"adminContactNumber":adminContactNumber}]});
         if(admin) return res.status(400).json({tag:"adminEmail,adminContactNumber",message:"User already exist"});
 
+        const otpData = await Otp.findOne({adminEmail});
+        if(!otpData) return res.status(404).json({messsage:"Invalid or expired otp"});
+
+        if(parseInt(otpData.otp) != parseInt(otp)) return res.status(400).json({tag:"otp",message:"Invaid otp"});
+
         const newCollege = new College({
-            collegeName,collegeCode,collegeType,collegeEmail,collegeContactNumber
+            collegeName,collegeCode,collegeType
         });
         await newCollege.save();
         const createdCollege = await College.findOne({collegeCode});
@@ -67,13 +72,13 @@ const adminLogin = async (req,res) => {
             {
                 id:admin._id,
                 collegeId:admin.collegeID,
-                authorize:"college_admin"
+                authorize:admin.role
             }, 
             process.env.JWT_PRIVATE_KEY, 
             { algorithm: process.env.JWT_ALGORITHUM }
         );
         await Admin.updateOne({_id:admin._id},{token});
-        return res.status(200).json({message:"Admin loged in successfully",token:token,user:"college_admin"});
+        return res.status(200).json({message:"Admin loged in successfully",token:token,role:admin.role});
     }catch(err){
         return res.status(500).json({message:"Error in login user", error:err.message});
     }
@@ -81,8 +86,8 @@ const adminLogin = async (req,res) => {
 /* ******************** admin login controller end here ******************** */
 
 
-/* ******************** admin email verify controller start here ******************** */
-const verifyEmail = async (req,res) => {
+/* ******************** admin email verify for login controller start here ******************** */
+const verifyEmail_login = async (req,res) => {
     try{
         const {adminEmail} = req.body;
         if(!adminEmail) return res.status(400).json({tag:"email",message:"Email is required"});
@@ -94,14 +99,14 @@ const verifyEmail = async (req,res) => {
         const emailStatus = await sendOtpMail(adminEmail,otp);
 
         if(emailStatus.status == 200){
-            const oldOTP = await Otp.findOne({email:adminEmail});
+            const oldOTP = await Otp.findOne({adminEmail});
             if(oldOTP){
-                await Otp.updateOne({email:adminEmail},{otp});
+                await Otp.updateOne({adminEmail},{otp});
                 return res.status(200).json({message:"Otp send successfully"});
             }
 
             const newOtp = new Otp({
-                email:adminEmail,
+                adminEmail,
                 otp
             });
             await newOtp.save();
@@ -113,6 +118,40 @@ const verifyEmail = async (req,res) => {
         return res.status(500).json({message:"There is and error in sending mail",error:err.message});
     };
 }
-/* ******************** admin email verify controller end here ******************** */
+/* ******************** admin email verify for login controller end here ******************** */
 
-module.exports = {createAdmin,adminLogin,verifyEmail};
+/* ******************** admin email verify for signup controller start here ******************** */
+const verifyEmail_signup = async (req,res) => {
+    try{
+        const {adminEmail} = req.body;
+        if(!adminEmail) return res.status(400).json({tag:"email",message:"Email is required"});
+
+        const admin = await Admin.findOne({adminEmail});
+        if(admin) return res.status(400).json({tag:"email",message:"User found with this email"});
+
+        const otp = getOtp();
+        const emailStatus = await sendOtpMail(adminEmail,otp);
+
+        if(emailStatus.status == 200){
+            const oldOTP = await Otp.findOne({adminEmail});
+            if(oldOTP){
+                await Otp.updateOne({adminEmail},{otp});
+                return res.status(200).json({message:"Otp send successfully"});
+            }
+
+            const newOtp = new Otp({
+                adminEmail,
+                otp
+            });
+            await newOtp.save();
+            return res.status(200).json({message:"Otp send successfully "});
+        }
+        return emailStatus;
+
+    }catch(err){
+        return res.status(500).json({message:"There is and error in sending mail",error:err.message});
+    };
+}
+/* ******************** admin email verify for signup controller end here ******************** */
+
+module.exports = {createAdmin,adminLogin,verifyEmail_login,verifyEmail_signup};

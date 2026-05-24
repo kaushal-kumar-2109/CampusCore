@@ -71,7 +71,7 @@ const AdminLogin = ({ navigation }) => {
         }
         setMessage("Login successful");
         setLoader(false);
-        navigation.navigate("adminSignup")
+        navigation.navigate("CheckUserAuth");
     };
 
     return (
@@ -80,6 +80,7 @@ const AdminLogin = ({ navigation }) => {
             style={[styles.gradient, { minHeight: windowHeight }]}
         >
             <ScrollView
+                style={[{height:"auto",maxHeight:"90%"}]}
                 contentContainerStyle={styles.container}
                 keyboardShouldPersistTaps="handled"
             >

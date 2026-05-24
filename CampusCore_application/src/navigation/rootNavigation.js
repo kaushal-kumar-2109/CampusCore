@@ -9,14 +9,14 @@ import { StudentNavigation } from "./studentsNavigation.js";
 
 import { getUserData } from "../database/controllers/querryRunner.js";
 
-const RootNavigator = () => {
+const RootNavigator = ({db}) => {
     const [getLoading, setLoading] = useState(true);
     const [getUserRole, setUserRole] = useState(null);
     const [getUserToken, setUserToken] = useState(null);
 
     useEffect(()=>{
         const checkAuth = async () => {
-        const userData = await getUserData();
+        const userData = await getUserData(db);
         if (userData.status==200) {
           setUserRole(userData.data.authorize);
           setUserToken(userData.data.token);
@@ -30,27 +30,29 @@ const RootNavigator = () => {
         return(<><Text>Loding...</Text></>);
     }
     if (!getUserRole) {
-        return <SetupNavigation />;
+        return(
+        <SetupNavigation />
+        );
     }
-    if(getUserRole === "student"){
-        return(<>
+    if(getUserRole === "COLLEGE_STUDENT"){
+        return(
         <StudentNavigation />
-        </>);
+        );
     }
-    if(getUserRole === "staff"){
-        return(<>
+    if(getUserRole === "COLLEGE_STAFF"){
+        return(
         <StaffNavigation />
-        </>);
+        );
     }
-    if(getUserRole === "college_admin"){
-        return(<>
+    if(getUserRole === "COLLEGE_ADMIN"){
+        return(
         <AdminNavigation />
-        </>);
+        );
     }
     
-    return(<>
+    return(
         <SetupNavigation />
-    </>)
+    );
 }
 
 export {RootNavigator};

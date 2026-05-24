@@ -20,13 +20,13 @@ const collegeSchema = mongoose.Schema({
     },
     collegeEmail:{
         type: String,
-        require: true,
+        default: "",
         unique: true
     },
     collegeContactNumber: {
         type: String,
         unique: true,
-        require: true
+        default: ""
     },
     websites: [
         {
