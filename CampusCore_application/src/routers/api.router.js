@@ -1,6 +1,6 @@
-const MAIN_API_PATH = "http://192.168.1.18:3000//CampusCore";
+const MAIN_API_PATH = "http://192.168.1.18:3000/CampusCore";
 
-ROUTERS = {
+const ROUTERS = {
     getRouter: {
     },
     postRouter: {

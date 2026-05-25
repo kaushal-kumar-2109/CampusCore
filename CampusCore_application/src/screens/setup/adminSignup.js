@@ -3,6 +3,7 @@ import {View,Text,TextInput,Pressable,StyleSheet,Platform,ScrollView,Image,Dimen
 import { LinearGradient } from "expo-linear-gradient";
 import { lightTheme, darkTheme } from "../../global/theam";
 import { useColorScheme } from "react-native";
+import { verifyAdminSignupEmail } from "../../routers/controllers/adminSetup";
 
 const AdminSignup = ({ navigation }) => {
     const [getLoader, setLoader] = useState(false);
@@ -35,7 +36,7 @@ const AdminSignup = ({ navigation }) => {
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
     const windowHeight = Dimensions.get("window").height; 
 
-    const handleVerifyEmail = () => {
+    const handleVerifyEmail = async () => {
         setLoader(true);
         setEmailError("");
         setMessage("");
@@ -49,7 +50,11 @@ const AdminSignup = ({ navigation }) => {
             setLoader(false);
             return;
         }
-
+        let res = await verifyAdminSignupEmail(email);
+        if(!res.status || res.status != 200){
+            setLoader(false);
+            return;
+        }
         setIsEmailVerified(true);
         setLoader(false);
         setMessage("OTP sent to your email successfully");
@@ -60,7 +65,7 @@ const AdminSignup = ({ navigation }) => {
 
         setAdminNameErr("");setAdminNumberErr("");setOtpError("");setPasswordError("");setEmailError("");
         setCollegeCodeErr("");setCollegeNameErr("");setCollegeTypeErr("");
-        setMessage("");otpError("");
+        setMessage("");
 
         if(!collegeType){
             setCollegeTypeErr("College type is required");
