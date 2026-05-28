@@ -7,16 +7,17 @@ import { AdminNavigation } from "./adminNavigation.js";
 import { StaffNavigation } from "./staffNavigation.js";
 import { StudentNavigation } from "./studentsNavigation.js";
 
-import { getUserData } from "../database/controllers/querryRunner.js";
+import { getQueryRunner } from "../database/controllers/querryRunner.js";
 
-const RootNavigator = ({db}) => {
+const RootNavigator = () => {
     const [getLoading, setLoading] = useState(true);
     const [getUserRole, setUserRole] = useState(null);
     const [getUserToken, setUserToken] = useState(null);
 
     useEffect(()=>{
         const checkAuth = async () => {
-        const userData = await getUserData(db);
+        const userData = await getQueryRunner("SELECT * FROM userToken;");
+        console.log(userData);
         if (userData.status==200) {
           setUserRole(userData.data.authorize);
           setUserToken(userData.data.token);

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import {View,Text,TextInput,Pressable,StyleSheet,Platform,ScrollView,Image,Dimensions,} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Picker } from "@react-native-picker/picker";
 import { lightTheme, darkTheme } from "../../global/theam";
 import { useColorScheme } from "react-native";
-import { verifyAdminSignupEmail } from "../../routers/controllers/adminSetup";
+import { creteAdminAccount, verifyAdminSignupEmail } from "../../routers/controllers/adminSetup";
+import Loader from "../../components/other/loader";
 
 const AdminSignup = ({ navigation }) => {
     const [getLoader, setLoader] = useState(false);
@@ -52,6 +54,10 @@ const AdminSignup = ({ navigation }) => {
         }
         let res = await verifyAdminSignupEmail(email);
         if(!res.status || res.status != 200){
+            setMessage("OTP not sent try agin later");
+            if(res.data.tag && res.data.tag=="email"){
+                setEmailError(res.data.message);
+            }
             setLoader(false);
             return;
         }
@@ -60,59 +66,40 @@ const AdminSignup = ({ navigation }) => {
         setMessage("OTP sent to your email successfully");
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setLoader(true);
-
+        let data = {};
         setAdminNameErr("");setAdminNumberErr("");setOtpError("");setPasswordError("");setEmailError("");
         setCollegeCodeErr("");setCollegeNameErr("");setCollegeTypeErr("");
         setMessage("");
-
-        if(!collegeType){
-            setCollegeTypeErr("College type is required");
-            setLoader(false);
-            return;
-        }
         
-        if(!collegeCode){
-            setCollegeCodeErr("College code is required");
-            setLoader(false);
-            return;
-        }
-        if(!collegeName){
-            setCollegeNameErr("College name  is required");
-            setLoader(false);
-            return;
-        }
-        if(!email){
-            setEmailError("Email is required");
-            setLoader(false);
-            return;
-        }
-        if(!adminName){
-            setAdminNameErr("Name is required");
-            setLoader(false);
-            return;
-        }
-        if(!adminNumber){
-            setAdminNumberErr("Number is required");
-            setLoader(false);
-            return;
-        }
         if (!isEmailVerified) {
             setEmailError("Please verify your email first");
             setLoader(false);
             return;
         }
-        if (!otp.trim()) {
-            setOtpError("OTP is required");
+
+        if(!adminName){
+            setAdminNameErr("Name is required");
             setLoader(false);
             return;
         }
-        if (otp.length !== 6) {
-            setOtpError("OTP must be 6 digits");
+        data["adminName"] = adminName;
+
+        if(!adminNumber){
+            setAdminNumberErr("Number is required");
             setLoader(false);
             return;
         }
+        data["adminContactNumber"] = adminNumber;
+
+        if(!email){
+            setEmailError("Email is required");
+            setLoader(false);
+            return;
+        }
+        data["adminEmail"] = email;
+
         if (!password.trim()) {
             setPasswordError("Password is required");
             setLoader(false);
@@ -123,9 +110,64 @@ const AdminSignup = ({ navigation }) => {
             setLoader(false);
             return;
         }
+        data["password"] = password;
+
+        if(!collegeName){
+            setCollegeNameErr("College name  is required");
+            setLoader(false);
+            return;
+        }
+        data["collegeName"] = collegeName;
+
+        if(!collegeCode){
+            setCollegeCodeErr("College code is required");
+            setLoader(false);
+            return;
+        }
+        data["collegeCode"] = collegeCode;
+
+        if(!collegeType){
+            setCollegeTypeErr("College type is required");
+            setLoader(false);
+            return;
+        }
+        data["collegeType"] = collegeType;
+
+        if (!otp.trim()) {
+            setOtpError("OTP is required");
+            setLoader(false);
+            return;
+        }
+        if (otp.length !== 6) {
+            setOtpError("OTP must be 6 digits");
+            setLoader(false);
+            return;
+        }
+        data["otp"] = otp;
+
+        let res = await creteAdminAccount(data);
+        if(!res.status || res.status != 200){
+            setMessage("Login Failed");
+            if(res.data.tag && res.data.tag=="email"){
+                setEmailError(res.data.message);
+            }
+            if(res.data.tag && res.data.tag=="otp"){
+                setOtpError(res.data.message);
+            }
+            if(res.data.tag && res.data.tag=="collegeCode,collegeNane"){
+                setCollegeCode(res.data.message);
+                setCollegeName(res.data.message);
+            }
+            if(res.data.tag && res.data.tag=="adminEmail,adminContactNumber"){
+                setCollegeCode(res.data.message);
+                setCollegeName(res.data.message);
+            }
+            setLoader(false);
+            return;
+        }
         setMessage("Login successful");
         setLoader(false);
-        navigation.navigate("CheckUserAuth")
+        navigation.navigate("adminLogin");
     };
 
     return (
@@ -149,7 +191,7 @@ const AdminSignup = ({ navigation }) => {
                     <Text style={[styles.title, { color: theme.primary }]}>Admin Signup</Text>
                     <Text style={[styles.subtitle, { color: theme.subText }]}>Welcome to CampusCore</Text>
 
-                    {(getLoader == true) ? <Text>Loding ... </Text>
+                    {(getLoader == true) ? <Loader />
                     :<>
 
 {/* ******************** The Admin name field start here ******************** */}
@@ -273,16 +315,34 @@ const AdminSignup = ({ navigation }) => {
 {/* ******************** The college code field end here ******************** */}
 
 {/* ******************** The college type field start here ******************** */}
-                    <Text style={[styles.label, { color: theme.text }]}>College type</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter college type"
-                        placeholderTextColor={theme.subText}
-                        value={collegeType}
-                        onChangeText={setCollegeType}
-                    />
+                    <Text style={[styles.label, { color: theme.text }]}>
+                        College Type
+                    </Text>
+
+                    <View 
+                        style={[styles.pickerContainer,
+                        {
+                            backgroundColor: theme.inputBackground,
+                            borderColor: theme.border,
+                        },
+                        ]}
+                    >
+                        <Picker
+                            selectedValue={collegeType}
+                            onValueChange={(itemValue) => setCollegeType(itemValue)}
+                            dropdownIconColor={theme.text}
+                            style={{ color: theme.text }}
+                        >
+                            <Picker.Item label="Select College Type" value="" />
+                            <Picker.Item label="School" value="School" />
+                            <Picker.Item label="College" value="College" />
+                            <Picker.Item label="University" value="University" />
+                            <Picker.Item label="Institute" value="Institute" />
+                        </Picker>
+                    </View>
+
                     {collegeTypeErr ? (
-                    <Text style={styles.errorText}>{collegeTypeErr}</Text>
+                      <Text style={styles.errorText}>{collegeTypeErr}</Text>
                     ) : null}
 {/* ******************** The college type field end here ******************** */}
 
@@ -452,4 +512,12 @@ const styles = StyleSheet.create({
         color: "#4F46E5",
         fontWeight: "800",
     },
+    pickerContainer: {
+        width: "100%",
+        borderWidth: 1,
+        borderRadius: 12,
+        overflow: "hidden",
+        marginTop: 8,
+        marginBottom: 10,
+    }
 });

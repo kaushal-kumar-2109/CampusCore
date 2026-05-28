@@ -33,7 +33,6 @@ const createAdmin = async (req,res) => {
 
         const otpData = await Otp.findOne({adminEmail});
         if(!otpData) return res.status(404).json({messsage:"Invalid or expired otp"});
-
         if(parseInt(otpData.otp) != parseInt(otp)) return res.status(400).json({tag:"otp",message:"Invaid otp"});
 
         const newCollege = new College({
@@ -59,11 +58,15 @@ const createAdmin = async (req,res) => {
 /* ******************** admin login controller start here ******************** */
 const adminLogin = async (req,res) => {
     try{
-        const {adminEmail,password} = req.body;
+        const {adminEmail,password,otp} = req.body;
         if(!adminEmail || !password) return res.status(401).json({message:"All fields are required"});
 
         const admin = await Admin.findOne({adminEmail});
         if(!admin) return res.status(404).json({tag:"email",message:"User not found with this email"});
+
+        const otpData = await Otp.findOne({adminEmail});
+        if(!otpData) return res.status(404).json({messsage:"Invalid or expired otp"});
+        if(parseInt(otpData.otp) != parseInt(otp)) return res.status(400).json({tag:"otp",message:"Invaid otp"});
 
         const isMatch = await bcrypt.compare(password,admin.password);
         if(!isMatch) return res.status(400).json({tag:"password", message:"Invalid password"});
@@ -122,6 +125,7 @@ const verifyEmail_login = async (req,res) => {
 
 /* ******************** admin email verify for signup controller start here ******************** */
 const verifyEmail_signup = async (req,res) => {
+
     try{
         const {adminEmail} = req.body;
         if(!adminEmail) return res.status(400).json({tag:"email",message:"Email is required"});

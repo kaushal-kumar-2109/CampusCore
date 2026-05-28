@@ -1,9 +1,11 @@
-
 import React, { useState } from "react";
 import {View,Text,TextInput,Pressable,StyleSheet,Platform,ScrollView,Image,Dimensions,} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { lightTheme, darkTheme } from "../../global/theam";
 import { useColorScheme } from "react-native";
+import Loader from "../../components/other/loader";
+import { adminLoginAccount, verifyAdminLoginEmail } from "../../routers/controllers/adminSetup";
+import { postQuryRunner } from "../../database/controllers/querryRunner";
 
 const AdminLogin = ({ navigation }) => {
     const [getLoader, setLoader] = useState(false);
@@ -19,7 +21,7 @@ const AdminLogin = ({ navigation }) => {
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
     const windowHeight = Dimensions.get("window").height; 
 
-    const handleVerifyEmail = () => {
+    const handleVerifyEmail = async () => {
         setLoader(true);
         setEmailError("");
         setMessage("");
@@ -34,13 +36,23 @@ const AdminLogin = ({ navigation }) => {
             return;
         }
 
+        const res = await verifyAdminLoginEmail(email);
+        if(!res.status || res.status != 200){
+            setMessage("OTP not sent try agin later");
+            if(res.data.tag && res.data.tag=="email"){
+                setEmailError(res.data.message);
+            }
+            setLoader(false);
+            return;
+        }
         setIsEmailVerified(true);
         setLoader(false);
         setMessage("OTP sent to your email successfully");
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setLoader(true);
+        const data = {};
         setOtpError("");
         setPasswordError("");
         setMessage("");
@@ -49,6 +61,8 @@ const AdminLogin = ({ navigation }) => {
             setLoader(false);
             return;
         }
+        data["adminEmail"] = email;
+
         if (!otp.trim()) {
             setOtpError("OTP is required");
             setLoader(false);
@@ -59,6 +73,8 @@ const AdminLogin = ({ navigation }) => {
             setLoader(false);
             return;
         }
+        data["otp"] = otp;
+
         if (!password.trim()) {
             setPasswordError("Password is required");
             setLoader(false);
@@ -66,6 +82,29 @@ const AdminLogin = ({ navigation }) => {
         }
         if (password.length < 8) {
             setPasswordError("Password must be at least 8 characters");
+            setLoader(false);
+            return;
+        }
+        data["password"] = password;
+
+        const res = await adminLoginAccount(data);
+        if(!res.status || res.status != 200){
+            setMessage("Account not login try again");
+            if(res.data.tag && res.data.tag=="email"){
+                setEmailError(res.data.message);
+            }
+            if(res.data.tag && res.data.tag=="otp"){
+                setOtpError(res.data.message);
+            }
+            if(res.data.tag && res.data.tag=="password"){
+                setPasswordError(res.data.message);
+            }
+            setLoader(false);
+            return;
+        }
+        const user = await postQuryRunner(`INSERT INTO userToken (id,token,authorize) VALUES('CampusCoreAdmin20030921','${res.data.token}','${res.data.role}')`);
+        if (!user.status || user.status!=200) {
+            setMessage("Login failed try again later");
             setLoader(false);
             return;
         }
@@ -95,8 +134,10 @@ const AdminLogin = ({ navigation }) => {
                     <Text style={[styles.title, { color: theme.primary }]}>Admin Login</Text>
                     <Text style={[styles.subtitle, { color: theme.subText }]}>Welcome back to CampusCore</Text>
 
-                    {(getLoader == true) ? <Text>Loding ... </Text>
+                    {(getLoader == true) ? <Loader />
                     :<>
+
+{/* ******************** The Admin email field start here ******************** */}
                     <Text style={[styles.label, { color: theme.text }]}>Email Address</Text>
                     <View style={styles.emailRow}>
                         <TextInput
@@ -131,7 +172,24 @@ const AdminLogin = ({ navigation }) => {
                     {emailError ? (
                         <Text style={styles.errorText}>{emailError}</Text>
                     ) : null}
+{/* ******************** The Admin email field ends here ******************** */}
 
+{/* ******************** The Admin password field start here ******************** */}
+                    <Text style={[styles.label, { color: theme.text }]}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter password"
+                        placeholderTextColor={theme.subText}
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
+                    {passwordError ? (
+                    <Text style={styles.errorText}>{passwordError}</Text>
+                    ) : null}
+{/* ******************** The Admin password field ends here ******************** */}
+
+{/* ******************** The Admin otp field start here ******************** */}
                     <Text style={[styles.label, { color: theme.text }]}>OTP</Text>
                     <TextInput
                         style={styles.input}
@@ -145,19 +203,7 @@ const AdminLogin = ({ navigation }) => {
                     {otpError ? (
                     <Text style={styles.errorText}>{otpError}</Text>
                     ) : null}
-
-                    <Text style={[styles.label, { color: theme.text }]}>Password</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter password"
-                        placeholderTextColor={theme.subText}
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                    />
-                    {passwordError ? (
-                    <Text style={styles.errorText}>{passwordError}</Text>
-                    ) : null}
+{/* ******************** The Admin otp field end here ******************** */}
 
                     {message ? (
                     <Text style={styles.successText}>{message}</Text>

@@ -1,13 +1,12 @@
 import * as SQLite from "expo-sqlite";
-import { getUserDataQuery } from "./userQuery";
 
 /* ******************** get userdata query runner function start here ******************** */
-const getUserData = async (db) => {
+const getQueryRunner = async (query,db) => {
     try{
         if (!db) {
             db = await SQLite.openDatabaseAsync("campuscore.db");
         } 
-        const user = await db.getFirstAsync(getUserDataQuery);
+        const user = await db.getFirstAsync(query);
         if(!user || user == null || user === "null"){
             return ({status:404,message:"User Not FOund"});
         }
@@ -19,4 +18,16 @@ const getUserData = async (db) => {
 }
 /* ******************** get userdata query runner function ends here ******************** */
 
-export {getUserData};
+const postQuryRunner = async (query,db) => {
+    try{
+        if (!db) {
+            db = await SQLite.openDatabaseAsync("campuscore.db");
+        } 
+        await db.execAsync(query);
+        return({status:200,message:"User Created"});
+    }catch(err){
+        console.log("Error in geting user data error : ",err.message);
+    }
+}
+
+export { getQueryRunner, postQuryRunner };

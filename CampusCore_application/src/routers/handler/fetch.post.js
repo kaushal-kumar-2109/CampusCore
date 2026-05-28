@@ -1,11 +1,11 @@
-const fetchPostApi = async (data,api) => {
+const fetchPostApi = async (bodyData,api) => {
     try {
         const response = await fetch(api, {
             method: "POST",
             headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(bodyData),
         });
 
         const data = await response.json();
