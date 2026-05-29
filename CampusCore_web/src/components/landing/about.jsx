@@ -1,6 +1,21 @@
+
+import about1 from "../../assets/about1.png";
+import about2 from "../../assets/about2.png";
+import about3 from "../../assets/about3.png";
+
 const About = () => {
   return (
     <section className="about-section" id="about">
+      
+      <div className="about-right">
+        <div className="about-card large"> <img src={about1} className="about-card-image" /></div>
+
+        <div className="about-small-grid">
+          <div className="about-card"><img src={about2} className="about-card-image" /></div>
+          <div className="about-card"><img src={about3} className="about-card-image" /></div>
+        </div>
+      </div>
+
       <div className="about-left">
         <span>ABOUT CAMPUSCORE</span>
 
@@ -22,14 +37,6 @@ const About = () => {
         </p>
       </div>
 
-      <div className="about-right">
-        <div className="about-card large"></div>
-
-        <div className="about-small-grid">
-          <div className="about-card"></div>
-          <div className="about-card"></div>
-        </div>
-      </div>
     </section>
   );
 };

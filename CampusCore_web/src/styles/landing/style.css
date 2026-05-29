@@ -366,6 +366,11 @@
   margin-bottom: 22px;
 }
 
+.about-card-image{
+  width: 100%;
+  border-radius: 12px;
+}
+
 .about-small-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
