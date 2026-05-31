@@ -32,7 +32,7 @@ const createAdmin = async (req,res) => {
         if(admin) return res.status(400).json({tag:"adminEmail,adminContactNumber",message:"User already exist"});
 
         const otpData = await Otp.findOne({adminEmail});
-        if(!otpData) return res.status(404).json({messsage:"Invalid or expired otp"});
+        if(!otpData) return res.status(404).json({tag:"otp", message:"Invalid or expired otp"});
         if(parseInt(otpData.otp) != parseInt(otp)) return res.status(400).json({tag:"otp",message:"Invaid otp"});
 
         const newCollege = new College({

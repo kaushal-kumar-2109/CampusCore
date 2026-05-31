@@ -41,6 +41,12 @@ const AdminLogin = () => {
     const res = await VerifyAdminLoginEmail(data);
 
     if (!res.status || res.status !== 200) {
+      if(res.data.tag && res.data.tag=="email"){
+        setEmailError(res.data.message);
+      }
+      if(res.data.tag && res.data.tag=="otp"){
+        setOtpError(res.data.message);
+      }
       setMessage("OTP not sent, try again later");
       setLoader(false);
       return;
@@ -97,13 +103,26 @@ const AdminLogin = () => {
     const response = await AdminRoleLogin(data);
 
     if (!response.status || response.status !== 200) {
+      if(response.data.tag && response.data.tag==="email"){
+        setEmailError(response.data.message);
+      }
+      if(response.data.tag && response.data.tag==="otp"){
+        setOtpError(response.data.message);
+      }
+      if(response.data.tag && response.data.tag==="password"){
+        setPasswordError(response.data.message);
+      }
       setMessage("Account not logged in, try again");
       setLoader(false);
       return;
     }
-
-    // localStorage.setItem("CampusCoreToken", res.data.token);
-    // localStorage.setItem("CampusCoreRole", res.data.role);
+    
+    const webData = {
+      message: response.data.message,
+      role: response.data.role,
+      validTill: Date.now() + (7 * 24 * 60 * 60 * 1000)
+    };
+    localStorage.setItem("CampusCoreData", JSON.stringify(webData));
 
     setMessage("Login successful");
     setLoader(false);

@@ -9,6 +9,7 @@ const fetchPostApi = async (bodyData,api) => {
         });
 
         const data = await response.json();
+        console.log(data);
         return {
             status: response.status,
             data: data,

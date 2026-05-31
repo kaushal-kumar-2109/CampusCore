@@ -21,7 +21,6 @@ const collegeSchema = mongoose.Schema({
     collegeEmail:{
         type: String,
         default: "",
-        unique: true
     },
     collegeContactNumber: {
         type: String,
