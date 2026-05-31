@@ -4,6 +4,7 @@ import {
   Smartphone,
   Cloud,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const WhyChoose = () => {
   const points = [
@@ -46,9 +47,9 @@ const WhyChoose = () => {
           digital experience for students, staff, and management.
         </p>
 
-        <button className="primary-btn">
+        <Link to="/login-role" className="primary-btn">
           Explore Platform
-        </button>
+        </Link>
       </div>
 
       <div className="why-right">

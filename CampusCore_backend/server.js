@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const adminRouter = require("./routers/admin.routes.js");
 
 
@@ -10,7 +12,14 @@ const port = process.env.PORT || 4000
 
 
 /* ******************** middleware configration start here ******************** */
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true,
+}));
+
 app.use(express.json());
+app.use(cookieParser());
 /* ******************** middleware configration ends here ******************** */
 
 
@@ -33,6 +42,10 @@ mongoose.connect(process.env.MONGODB_URL)
     console.log("\n❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌\n");
 });
 /* ******************** mongodb connection ends here ******************** */
+
+app.get("/",(req,res)=>{
+    res.json({Status:true,message:"runnin fine"});
+});
 
 
 /* ******************** server connection start here ******************** */

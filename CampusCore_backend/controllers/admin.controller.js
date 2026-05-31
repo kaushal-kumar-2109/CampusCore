@@ -78,10 +78,22 @@ const adminLogin = async (req,res) => {
                 authorize:admin.role
             }, 
             process.env.JWT_PRIVATE_KEY, 
-            { algorithm: process.env.JWT_ALGORITHUM }
+            { 
+                algorithm: process.env.JWT_ALGORITHUM,
+                expiresIn: "7d"
+            }
         );
+
+        res.cookie("CampusCoreToken",token,{
+            httpOnly: true,
+            secure:false, // true when production with https
+            sameSite: "lax",
+            maxAge: 7*24*60*60*1000
+        });
+
         await Admin.updateOne({_id:admin._id},{token});
-        return res.status(200).json({message:"Admin loged in successfully",token:token,role:admin.role});
+
+        return res.status(200).json({message:"Admin loged in successfully",role:admin.role});
     }catch(err){
         return res.status(500).json({message:"Error in login user", error:err.message});
     }

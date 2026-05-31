@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ShieldUser, BriefcaseBusiness, GraduationCap } from "lucide-react";
+import logo from "../../assets/Logo.png";
 import "../../styles/auth/auth.css";
 
 const LoginRole = () => {
@@ -30,7 +31,7 @@ const LoginRole = () => {
   return (
     <main className="auth-role-page">
       <Link to="/" className="auth-logo">
-        <GraduationCap size={24} />
+        <img src={logo} className="logo" alt="Logo" />
         <span>CampusCore</span>
       </Link>
 

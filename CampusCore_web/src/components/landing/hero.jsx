@@ -1,4 +1,5 @@
 import { UserStar, LibraryBig, Highlighter, GraduationCap, LineChart } from "lucide-react";
+import { Link } from "react-router-dom";
 import lineImage from "../../assets/lineGraph.png";
 const Hero = () => {
   return (
@@ -22,13 +23,14 @@ const Hero = () => {
         </p>
 
         <div className="hero-buttons">
-          <button className="primary-btn">
+          
+          <Link to="/login-role" className="primary-btn">
             Get Started Free
-          </button>
-
-          <button className="secondary-btn">
+          </Link>
+       
+          {/* <button className="secondary-btn">
             Book Demo
-          </button>
+          </button> */}
         </div>
 
         <div className="hero-stats">
