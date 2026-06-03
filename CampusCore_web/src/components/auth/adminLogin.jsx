@@ -4,6 +4,7 @@ import { GraduationCap } from "lucide-react";
 import { VerifyAdminLoginEmail, AdminRoleLogin } from "../../api/controller/auth.controller";
 import "../../styles/auth/auth.css";
 import logo from "../../assets/Logo.png"
+import { jsx } from "react/jsx-runtime";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -123,6 +124,13 @@ const AdminLogin = () => {
       validTill: Date.now() + (7 * 24 * 60 * 60 * 1000)
     };
     localStorage.setItem("CampusCoreData", JSON.stringify(webData));
+
+    const webSetting = {
+      theam:"light",
+    };
+    if(! localStorage.getItem("CampusCoreSettings")){
+      localStorage.setItem("CampusCoreSettings",JSON.stringify(webSetting));
+    }
 
     setMessage("Login successful");
     setLoader(false);

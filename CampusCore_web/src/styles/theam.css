@@ -1,0 +1,66 @@
+:root {
+  --light-theam-background: #cfdef3;
+  --light-theam-card: #ffffff;
+  --light-theam-primaryText: #0f172a;
+  --light-theam-secondaryText: #525c69;
+  --light-theam-subText: #94a3b8;
+  --light-theam-primary: #4f46e5;
+  --light-theam-border: #818283;
+  --light-theam-input: #ffffff;
+  --light-theam-buttonBackground: #3e6ec2;
+  --light-theam-buttonTextColor: #ffffff;
+  --light-theam-buttonBorder: #818283;
+
+  --dark-theam-background: #0c1220;
+  --dark-theam-card: #293447;
+  --dark-theam-primaryText: #f8fafc;
+  --dark-theam-secondaryText: #b6b7b9;
+  --dark-theam-subText: #7e7f80;
+  --dark-theam-primary: #818cf8;
+  --dark-theam-border: #6d7f98;
+  --dark-theam-input: #293447;
+  --dark-theam-buttonBackground: #3e6ec2;
+  --dark-theam-buttonTextColor: #ffffff;
+  --dark-theam-buttonBorder: #727274;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --background: var(--light-theam-background);
+  --card: var(--light-theam-card);
+  --primaryText: var(--light-theam-primaryText);
+  --secondaryText: var(--light-theam-secondaryText);
+  --subText: var(--light-theam-subText);
+  --primary: var(--light-theam-primary);
+  --border: var(--light-theam-border);
+  --input: var(--light-theam-input);
+  --buttonBackground: var(--light-theam-buttonBackground);
+  --buttonTextColor: var(--light-theam-buttonTextColor);
+  --buttonBorder: var(--light-theam-buttonBorder);
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --background: var(--dark-theam-background);
+  --card: var(--dark-theam-card);
+  --primaryText: var(--dark-theam-primaryText);
+  --secondaryText: var(--dark-theam-secondaryText);
+  --subText: var(--dark-theam-subText);
+  --primary: var(--dark-theam-primary);
+  --border: var(--dark-theam-border);
+  --input: var(--dark-theam-input);
+  --buttonBackground: var(--dark-theam-buttonBackground);
+  --buttonTextColor: var(--dark-theam-buttonTextColor);
+  --buttonBorder: var(--dark-theam-buttonBorder);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--primaryText);
+  font-family: Arial, sans-serif;
+}
