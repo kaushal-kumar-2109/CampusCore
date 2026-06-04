@@ -47,10 +47,6 @@ const adminSchema = new mongoose.Schema(
             enum: ["ACTIVE", "EXPIRED", "CANCELLED"],
             default: "ACTIVE",
         },
-        token: {
-            type: String,
-            default: ""
-        },
         createdAt: {
             type: Date,
             default: Date.now

@@ -5,10 +5,13 @@ const API_PATH = `${API_SUB_PATH}${COMMON_PATH}`;
 
 const API = {
     ROLE_SETUP : {
-        adminLoginEmailVerify:`${API_PATH}/verify-login-email`,
-        adminSignupEmailVerify:`${API_PATH}/verify-signup-email`,
-        adminLogin:`${API_PATH}/admin-login`,
-        adminSignup:`${API_PATH}/admin-signup`
+        adminLoginEmailVerify : `${API_PATH}/verify-login-email`,
+        adminSignupEmailVerify : `${API_PATH}/verify-signup-email`,
+        adminLogin : `${API_PATH}/admin-login`,
+        adminSignup : `${API_PATH}/admin-signup`
+    },
+    ADMIN_MANAGEMENT : {
+        getStudentsData : `${API_PATH}/admin-dashboard/students`,
     }
 }
 

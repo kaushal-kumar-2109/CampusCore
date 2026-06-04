@@ -1,5 +1,6 @@
 const Admin = require("../models/admin.model");
 const College = require("../models/college.model");
+const Token = require("../models/token.model");
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -91,8 +92,16 @@ const adminLogin = async (req,res) => {
             maxAge: 7*24*60*60*1000
         });
 
-        await Admin.updateOne({_id:admin._id},{token});
-
+        const oldToken = await Token.findOne({adminEmail});
+        if(oldToken){
+            await Token.updateOne({adminEmail},{token});
+        }else{
+            const newToken = new Token({
+                adminEmail,
+                token
+            });
+            await newToken.save();
+        }
         return res.status(200).json({message:"Admin loged in successfully",role:admin.role});
     }catch(err){
         return res.status(500).json({message:"Error in login user", error:err.message});

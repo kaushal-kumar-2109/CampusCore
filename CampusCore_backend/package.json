@@ -7,6 +7,7 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
+    "seed": "node initdb/seedDepartment.js && node initdb/courses.js && node initdb/seedStaff.js && node initdb/seedStudents.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

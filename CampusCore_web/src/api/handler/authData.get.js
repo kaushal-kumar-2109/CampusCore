@@ -1,12 +1,8 @@
-const fetchPostApi = async (bodyData,api) => {
+const authFetchGetApi = async (api) => {
     try {
         const response = await fetch(api, {
-            method: "POST",
-            credentials: "include", // important
-            headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),
+            method: "GET",
+            credentials: "include", // send cookies
         });
 
         const data = await response.json();
@@ -26,4 +22,4 @@ const fetchPostApi = async (bodyData,api) => {
     }
 };
 
-export { fetchPostApi };
+export { authFetchGetApi };
