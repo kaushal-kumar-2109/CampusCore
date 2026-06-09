@@ -104,13 +104,13 @@ const studentSchema = new mongoose.Schema(
     ============================= */
 
     courseId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Courses",
         required: true,
     },
 
     departmentId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Departments",
         required: true,
     },
@@ -196,12 +196,12 @@ const studentSchema = new mongoose.Schema(
     ============================= */
 
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Admin",
     },
 
     collegeId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "College",
         required: true,
     },

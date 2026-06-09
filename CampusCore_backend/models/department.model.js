@@ -37,7 +37,7 @@ const departmentSchema = new mongoose.Schema(
     },
 
     collegeId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Colleges",
         required: true,
     },

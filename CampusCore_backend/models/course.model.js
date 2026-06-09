@@ -17,7 +17,7 @@ const courseSchema = new mongoose.Schema(
     },
 
     departmentId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Departments",
         required: true,
     },

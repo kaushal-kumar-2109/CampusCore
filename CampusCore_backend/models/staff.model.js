@@ -101,7 +101,7 @@ const staffSchema = new mongoose.Schema(
     ========================== */
 
     departmentId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Departments",
         required: true,
     },
@@ -186,13 +186,13 @@ const staffSchema = new mongoose.Schema(
     ========================== */
 
     collegeId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "College",
         required: true,
     },
 
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Admin",
         required: true,
     },
