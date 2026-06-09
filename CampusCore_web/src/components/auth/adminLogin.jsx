@@ -121,6 +121,7 @@ const AdminLogin = () => {
     const webData = {
       message: response.data.message,
       role: response.data.role,
+      token: response.data.token,
       validTill: Date.now() + (7 * 24 * 60 * 60 * 1000)
     };
     localStorage.setItem("CampusCoreData", JSON.stringify(webData));

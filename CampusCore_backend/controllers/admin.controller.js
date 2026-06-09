@@ -89,6 +89,7 @@ const adminLogin = async (req,res) => {
             httpOnly: true,
             secure:false, // true when production with https
             sameSite: "lax",
+            domain: "localhost",
             maxAge: 7*24*60*60*1000
         });
 
@@ -102,7 +103,7 @@ const adminLogin = async (req,res) => {
             });
             await newToken.save();
         }
-        return res.status(200).json({message:"Admin loged in successfully",role:admin.role});
+        return res.status(200).json({message:"Admin loged in successfully",role:admin.role, token:token});
     }catch(err){
         return res.status(500).json({message:"Error in login user", error:err.message});
     }

@@ -3,7 +3,7 @@ const router = express.Router();
 
 /* ******************** importing controller file start here ******************** */
 const {createAdmin, adminLogin, verifyEmail_login, verifyEmail_signup} = require("../controllers/admin.controller.js");
-const {getStudents} = require("../controllers/adminController/getData.controller.js");
+const {getStudents, getSingleStudent } = require("../controllers/adminController/getData.controller.js");
 /* ******************** importinf controller file end here ******************** */
 
 /* ******************** importinf middleware file start here ******************** */
@@ -20,7 +20,8 @@ router.route("/verify-signup-email").post(verifyEmail_signup);
 
 
 /* ******************** admin pages routers start here ******************** */
-router.route("/admin-dashboard/students").get(checkAuth, getStudents);
+router.route("/admin-dashboard/students").post(checkAuth, getStudents);
+router.route("/admin-dashboard/students-detail").post(checkAuth,getSingleStudent);
 /* ******************** admin pages routers ends here ******************** */
 
 

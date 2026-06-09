@@ -12,6 +12,7 @@ const API = {
     },
     ADMIN_MANAGEMENT : {
         getStudentsData : `${API_PATH}/admin-dashboard/students`,
+        getSingleStudent : `${API_PATH}/admin-dashboard/students-detail`,
     }
 }
 

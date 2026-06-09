@@ -11,6 +11,7 @@ import EventsHandle from "../pages/admin/EventsHandle";
 import NoticeHandle from "../pages/admin/NoticeHandle";
 import FeesHandle from "../pages/admin/FeesHandle";
 import SettingsHandle from "../pages/admin/SettingsHandle";
+import StudentDetail from "../pages/admin/derailComponents/studentDetail";
 
 const AdminRoutes = () => {
   return (
@@ -27,6 +28,8 @@ const AdminRoutes = () => {
       <Route path="/notices" element={<NoticeHandle />} />
       <Route path="/fees" element={<FeesHandle />} />
       <Route path="/settings" element={<SettingsHandle />} />
+
+      <Route path="/students/:id" element={<StudentDetail />} />
 
       <Route path="*" element={<h1>404 Not Found</h1>} />
       
